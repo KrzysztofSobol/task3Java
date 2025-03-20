@@ -17,9 +17,10 @@
 
     <build>
         <plugins>
+            <!-- surefire, compiler and maven site -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.12.1</version>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -30,7 +31,7 @@
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.12.1</version>
             </plugin>
-            <!-- konfiguracja plugina jacoco do generowania raportu z stopnia pokrycia kodu przez testy -->
+            <!-- jacoco -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -46,16 +47,54 @@
                     <destFile>${project.build.directory}/jacoco.exec</destFile>
                 </configuration>
             </plugin>
+            <!-- podmiana pliku persistence.xml w czasie testow na wersje z src/test/resources, bez tego wczytywany jest plik persistence.xml z src/main/resources  -->
+            <!-- jesus christ, in spring boot that would like 2 lines -->
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-test-persistence</id>
+                        <phase>process-test-resources</phase>
+                        <configuration>
+                            <target >
+                                <!--backup the "proper" persistence.xml-->
+                                <copy file="${project.build.outputDirectory}/META-INF/persistence.xml" tofile="${project.build.outputDirectory}/META-INF/persistence.xml.proper" overwrite="true"/>
+                                <!--replace the "proper" persistence.xml with the "test" version-->
+                                <copy file="${project.build.testOutputDirectory}/META-INF/persistence.xml" tofile="${project.build.outputDirectory}/META-INF/persistence.xml" overwrite="true"/>
+                            </target >
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>restore-persistence</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <target >
+                                <!--restore the "proper" persistence.xml-->
+                                <copy file="${project.build.outputDirectory}/META-INF/persistence.xml.proper" tofile="${project.build.outputDirectory}/META-INF/persistence.xml" overwrite="true" />
+                            </target >
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
     <dependencies>
+        <!-- JUnit -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.12.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- Mockito -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -67,6 +106,18 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <version>5.16.0</version>
             <scope>test</scope>
+        </dependency>
+        <!-- implementacja JPA - EclipseLink -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version> 4.0.2</version>
+        </dependency>
+        <!-- API JPA -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
         </dependency>
     </dependencies>
 
