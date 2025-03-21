@@ -1,4 +1,4 @@
-package demo.task1;
+package demo.task1.services;
 
 import java.math.BigDecimal;
 

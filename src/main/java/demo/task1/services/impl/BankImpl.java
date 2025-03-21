@@ -1,13 +1,16 @@
-package demo.task1;
+package demo.task1.services.impl;
+
+import demo.task1.models.Account;
+import demo.task1.dao.AccountRepository;
+import demo.task1.services.Bank;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 public class BankImpl implements Bank {
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
     private static final Logger logger = Logger.getLogger(BankImpl.class.getName());
 
     public BankImpl(AccountRepository accountRepository) {

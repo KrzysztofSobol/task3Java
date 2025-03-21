@@ -1,5 +1,8 @@
 package demo.task1;
 
+import demo.task1.models.Account;
+import demo.task1.dao.AccountRepository;
+import demo.task1.dao.impl.AccountRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

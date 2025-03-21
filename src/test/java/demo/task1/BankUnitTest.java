@@ -1,5 +1,9 @@
 package demo.task1;
 
+import demo.task1.dao.AccountRepository;
+import demo.task1.dao.impl.AccountRepositoryImpl;
+import demo.task1.services.Bank;
+import demo.task1.services.impl.BankImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +20,6 @@ public class BankUnitTest {
         AccountRepository accountRepository = new AccountRepositoryImpl();
         bank = new BankImpl(accountRepository);
     }
-
 
     @Test
     void test_create_account_if_account_exists() {

@@ -1,5 +1,11 @@
 package demo.task1;
 
+import demo.task1.models.Account;
+import demo.task1.dao.AccountRepository;
+import demo.task1.dao.impl.AccountRepositoryImpl;
+import demo.task1.services.Bank;
+import demo.task1.services.impl.BankImpl;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;

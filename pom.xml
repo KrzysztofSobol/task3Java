@@ -47,6 +47,20 @@
                     <destFile>${project.build.directory}/jacoco.exec</destFile>
                 </configuration>
             </plugin>
+            <!-- lombok -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <!-- podmiana pliku persistence.xml w czasie testow na wersje z src/test/resources, bez tego wczytywany jest plik persistence.xml z src/main/resources  -->
             <!-- jesus christ, in spring boot that would like 2 lines -->
             <plugin>
@@ -118,6 +132,18 @@
             <groupId>jakarta.persistence</groupId>
             <artifactId>jakarta.persistence-api</artifactId>
             <version>3.1.0</version>
+        </dependency>
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.36</version>
+        </dependency>
+        <!-- Postgres -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.5</version>
         </dependency>
     </dependencies>
 
