@@ -6,7 +6,6 @@
     <persistence-unit name="PU">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <class>demo.task1.Account</class>
-        <class>wipb.jpademo.model.UserGroup</class>
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:file:./h2data;"/>
             <property name="jakarta.persistence.jdbc.user" value="sa"/>
