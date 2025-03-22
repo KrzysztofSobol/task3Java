@@ -1,8 +1,7 @@
-package demo.task1.dao.impl;
+package demo.task1.repositories.impl;
 
 import demo.task1.models.Account;
-import demo.task1.dao.AccountRepository;
-import demo.task1.utils.JpaFactory;
+import demo.task1.repositories.AccountRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -20,6 +19,23 @@ public class AccountRepositoryImpl extends GenericDaoImpl<Account, Long> impleme
         Account account = new Account(name, address, balance);
         save(account);
         return account;
+    }
+
+    @Override
+    public void update(Account account) {
+        if (account == null) {
+            throw new IllegalArgumentException("Account cannot be null");
+        }
+
+        if (!exists(account.getId())) {
+            throw new IllegalArgumentException("Account with ID " + account.getId() + " not found");
+        }
+
+        try(EntityManager em = getEntityManager()) {
+            em.getTransaction().begin();
+            em.merge(account);
+            em.getTransaction().commit();
+        }
     }
 
     @Override

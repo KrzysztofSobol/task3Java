@@ -1,8 +1,10 @@
 package demo.task1;
 
 import demo.task1.models.Account;
-import demo.task1.dao.AccountRepository;
-import demo.task1.dao.impl.AccountRepositoryImpl;
+import demo.task1.repositories.AccountOperationRepository;
+import demo.task1.repositories.AccountRepository;
+import demo.task1.repositories.impl.AccountOperationRepositoryImpl;
+import demo.task1.repositories.impl.AccountRepositoryImpl;
 import demo.task1.services.Bank;
 import demo.task1.services.impl.BankImpl;
 
@@ -18,7 +20,8 @@ public class App {
     private static final Logger logger = Logger.getLogger(App.class.getName());
     private static final Scanner scanner = new Scanner(System.in);
     private static final AccountRepository accountRepository = new AccountRepositoryImpl();
-    private static final Bank bank = new BankImpl(accountRepository);
+    private static final AccountOperationRepository accountOperationRepository = new AccountOperationRepositoryImpl();
+    private static final Bank bank = new BankImpl(accountRepository, accountOperationRepository);
 
     static {
         try {

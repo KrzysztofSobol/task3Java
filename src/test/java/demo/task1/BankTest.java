@@ -1,7 +1,8 @@
 package demo.task1;
 
 import demo.task1.models.Account;
-import demo.task1.dao.AccountRepository;
+import demo.task1.repositories.AccountOperationRepository;
+import demo.task1.repositories.AccountRepository;
 import demo.task1.services.impl.BankImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,9 @@ public class BankTest {
 
     @Mock
     private AccountRepository accountRepository;
+
+    @Mock
+    private AccountOperationRepository accountOperationRepository;
 
     @InjectMocks
     private BankImpl bank;
@@ -69,7 +73,7 @@ public class BankTest {
         bank.deposit(1L, BigDecimal.valueOf(1));
 
         verify(accountRepository).findById(1L);
-        verify(accountRepository).save(any(Account.class));
+        verify(accountRepository).update(any(Account.class));
     }
 
     @Test
@@ -102,7 +106,7 @@ public class BankTest {
         bank.withdraw(2L, BigDecimal.ONE);
 
         verify(accountRepository).findById(2L);
-        verify(accountRepository).save(any(Account.class));
+        verify(accountRepository).update(any(Account.class));
     }
 
     @Test
@@ -113,7 +117,7 @@ public class BankTest {
         bank.withdraw(1L, null);
 
         verify(accountRepository).findById(1L);
-        verify(accountRepository).save(any(Account.class));
+        verify(accountRepository).update(any(Account.class));
     }
 
     @Test
@@ -123,10 +127,10 @@ public class BankTest {
         when(accountRepository.findById(1L)).thenReturn(
                 Optional.of(TestDataUtil.createTestAccountA()));
 
-        bank.transfer(1L, 2L, BigDecimal.ONE);
+        bank.transfer(2L, 1L, BigDecimal.ONE);
 
         verify(accountRepository).findById(2L);
         verify(accountRepository).findById(1L);
-        verify(accountRepository, times(2)).save(any(Account.class));
+        verify(accountRepository, times(2)).update(any(Account.class));
     }
 }

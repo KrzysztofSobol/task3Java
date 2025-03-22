@@ -1,14 +1,15 @@
 package demo.task1.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuperBuilder
 @NoArgsConstructor
@@ -24,9 +25,28 @@ public class Account extends AbstractModel{
     private String address;
     private BigDecimal balance = new BigDecimal(0);
 
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccountOperation> operations = new ArrayList<>();
+
+    public Account(String name, String address, BigDecimal balance) {
+        this.name = name;
+        this.address = address;
+        this.balance = balance;
+    }
+
     public Account(Account account) {
         this.name = account.getName();
         this.address = account.getAddress();
         this.balance = account.getBalance();
+    }
+
+    public void addOperation(AccountOperation operation) {
+        operations.add(operation);
+        operation.setAccount(this);
+    }
+
+    public void removeOperation(AccountOperation operation) {
+        operations.remove(operation);
+        operation.setAccount(null);
     }
 }

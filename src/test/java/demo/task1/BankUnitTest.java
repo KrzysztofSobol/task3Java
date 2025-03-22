@@ -1,10 +1,15 @@
 package demo.task1;
 
-import demo.task1.dao.AccountRepository;
-import demo.task1.dao.impl.AccountRepositoryImpl;
+import demo.task1.models.Account;
+import demo.task1.models.AccountOperation;
+import demo.task1.repositories.AccountOperationRepository;
+import demo.task1.repositories.AccountRepository;
+import demo.task1.repositories.impl.AccountOperationRepositoryImpl;
+import demo.task1.repositories.impl.AccountRepositoryImpl;
 import demo.task1.services.Bank;
 import demo.task1.services.impl.BankImpl;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -13,12 +18,27 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BankUnitTest {
-    private BankImpl bank;
+    static private BankImpl bank;
+    static private AccountRepository accountRepository;
+    static private AccountOperationRepository accountOperationRepository;
 
-    @BeforeEach
-    void setup() {
-        AccountRepository accountRepository = new AccountRepositoryImpl();
-        bank = new BankImpl(accountRepository);
+    @BeforeAll
+    static void setup() {
+        accountRepository = new AccountRepositoryImpl();
+        accountOperationRepository = new AccountOperationRepositoryImpl();
+        AccountOperationRepository accountOperationRepository = new AccountOperationRepositoryImpl();
+        bank = new BankImpl(accountRepository, accountOperationRepository);
+    }
+
+    @AfterEach
+    public void clearData() {
+        for(AccountOperation ao : accountOperationRepository.findAll()){
+            accountOperationRepository.delete(ao);
+        }
+
+        for(Account a : accountRepository.findAll()){
+            accountRepository.delete(a);
+        }
     }
 
     @Test
@@ -54,7 +74,7 @@ public class BankUnitTest {
 
         BigDecimal result = bank.getBalance(id);
 
-        assertEquals(result, BigDecimal.valueOf(111));
+        assertEquals(BigDecimal.valueOf(111), result);
     }
 
     @Test
@@ -89,7 +109,7 @@ public class BankUnitTest {
 
         BigDecimal result = bank.getBalance(id);
 
-        assertEquals(result, BigDecimal.valueOf(21.9));
+        assertEquals(BigDecimal.valueOf(21.9), result);
     }
 
     @Test

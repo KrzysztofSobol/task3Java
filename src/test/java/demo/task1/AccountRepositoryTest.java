@@ -1,26 +1,34 @@
 package demo.task1;
 
 import demo.task1.models.Account;
-import demo.task1.dao.AccountRepository;
-import demo.task1.dao.impl.AccountRepositoryImpl;
-import demo.task1.utils.JpaFactory;
-import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
+import demo.task1.models.AccountOperation;
+import demo.task1.repositories.AccountRepository;
+import demo.task1.repositories.impl.AccountRepositoryImpl;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AccountRepositoryTest {
 
-    private AccountRepository accountRepository;
+    private static AccountRepository accountRepository;
 
-    @BeforeEach
-    void setup() {
+    @BeforeAll
+    static void setup() {
         accountRepository = new AccountRepositoryImpl();
-        // clean db
+    }
+
+    @AfterEach
+    public void clearData() {
+        for(Account a : accountRepository.findAll()){
+            accountRepository.delete(a);
+        }
     }
 
     // create
@@ -133,5 +141,24 @@ public class AccountRepositoryTest {
         Optional<Account> found = accountRepository.findByNameAndAddress("x2","y2");
 
         assert found.isEmpty();
+    }
+
+    @Test
+    void test_deleteAccount() {
+        Account a = accountRepository.create("x", "y", BigDecimal.ZERO);
+        accountRepository.delete(a);
+
+        Optional<Account> found = accountRepository.findById(a.getId());
+        assert found.isEmpty();
+    }
+    
+    @Test
+    void test_findAllAccount() {
+        accountRepository.create("a", "b", BigDecimal.ZERO);
+        accountRepository.create("c", "d", BigDecimal.ZERO);
+        accountRepository.create("e", "f", BigDecimal.ZERO);
+
+        List<Account> accountList = accountRepository.findAll();
+        assertEquals(3, accountList.size());
     }
 }

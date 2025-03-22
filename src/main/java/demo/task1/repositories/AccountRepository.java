@@ -1,4 +1,4 @@
-package demo.task1.dao;
+package demo.task1.repositories;
 
 import demo.task1.models.Account;
 

@@ -1,7 +1,9 @@
 package demo.task1.services.impl;
 
 import demo.task1.models.Account;
-import demo.task1.dao.AccountRepository;
+import demo.task1.models.OperationType;
+import demo.task1.repositories.AccountOperationRepository;
+import demo.task1.repositories.AccountRepository;
 import demo.task1.services.Bank;
 
 import java.math.BigDecimal;
@@ -11,11 +13,15 @@ import java.util.logging.Logger;
 public class BankImpl implements Bank {
 
     private final AccountRepository accountRepository;
+    private final AccountOperationRepository operationRepository;
     private static final Logger logger = Logger.getLogger(BankImpl.class.getName());
 
-    public BankImpl(AccountRepository accountRepository) {
+    public BankImpl(AccountRepository accountRepository, AccountOperationRepository operationRepository) {
         this.accountRepository = accountRepository;
-        logger.info("Back instance created with repository: " + accountRepository.getClass().getName());
+        this.operationRepository = operationRepository;
+        logger.info("Bank instance created with repositories: " +
+                accountRepository.getClass().getName() + ", " +
+                operationRepository.getClass().getName());
     }
 
     @Override
@@ -63,9 +69,10 @@ public class BankImpl implements Bank {
             }
 
             ac.setBalance(ac.getBalance().add(amount));
+            operationRepository.createOperation(ac, amount, OperationType.DEPOSIT);
 
             logger.finer("Deposit successful for account: " + ac.getId());
-            accountRepository.save(ac);
+            accountRepository.update(ac);
         } catch(IllegalArgumentException e) {
             logger.severe("Account with id: " + id + " not found for the deposit!");
             throw new AccountIdException();
@@ -116,10 +123,11 @@ public class BankImpl implements Bank {
 
             BigDecimal newBalance = currentBalance.subtract(amount);
             ac.setBalance(newBalance);
+            operationRepository.createOperation(ac, amount, OperationType.WITHDRAW);
 
             logger.finer("Withdraw successful for account: " + ac.getId());
             logger.finer("Current balance: " + newBalance + " for account: " + ac.getId());
-            accountRepository.save(ac);
+            accountRepository.update(ac);
         } catch (IllegalArgumentException e) {
             logger.severe("Account with id: " + id + " not found for the withdraw!");
             throw new AccountIdException();
@@ -149,8 +157,11 @@ public class BankImpl implements Bank {
             sourceAc.setBalance(sourceAc.getBalance().subtract(amount));
             destAc.setBalance(destAc.getBalance().add(amount));
 
-            accountRepository.save(sourceAc);
-            accountRepository.save(destAc);
+            operationRepository.createTransferOperation(sourceAc, destAc, amount, OperationType.TRANSFER_OUT);
+            operationRepository.createTransferOperation(destAc, sourceAc, amount, OperationType.TRANSFER_IN);
+
+            accountRepository.update(sourceAc);
+            accountRepository.update(destAc);
 
             logger.finer("Transfer successful for account: " + sourceAc.getId());
             logger.finer("Current balance of source: " + sourceAc.getBalance() + " after transfering: " + amount + " to destination: " + destAc.getBalance());
