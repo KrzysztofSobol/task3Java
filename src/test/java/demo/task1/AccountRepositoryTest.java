@@ -3,6 +3,8 @@ package demo.task1;
 import demo.task1.models.Account;
 import demo.task1.dao.AccountRepository;
 import demo.task1.dao.impl.AccountRepositoryImpl;
+import demo.task1.utils.JpaFactory;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +20,7 @@ public class AccountRepositoryTest {
     @BeforeEach
     void setup() {
         accountRepository = new AccountRepositoryImpl();
+        // clean db
     }
 
     // create
@@ -37,7 +40,7 @@ public class AccountRepositoryTest {
         account.setAddress("d");
         account.setBalance(BigDecimal.TEN);
 
-        accountRepository.save(account);
+        accountRepository.update(account);
         Optional<Account> found = accountRepository.findById(account.getId());
 
         found.ifPresent(foundAccount -> {
@@ -53,7 +56,7 @@ public class AccountRepositoryTest {
         Account account = accountRepository.create("x","y", BigDecimal.ZERO);
         account.setId(null);
 
-        assertThrows(IllegalArgumentException.class, () -> accountRepository.save(account));
+        assertThrows(IllegalArgumentException.class, () -> accountRepository.update(account));
     }
 
     @Test
@@ -61,7 +64,7 @@ public class AccountRepositoryTest {
         Account account = accountRepository.create("x","y", BigDecimal.ZERO);
         account.setId((long)999999);
 
-        assertThrows(IllegalArgumentException.class, () -> accountRepository.save(account));
+        assertThrows(IllegalArgumentException.class, () -> accountRepository.update(account));
     }
 
     // findById

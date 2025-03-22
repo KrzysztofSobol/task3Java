@@ -1,6 +1,7 @@
 package demo.task1.dao.impl;
 
 import demo.task1.dao.GenericDao;
+import demo.task1.models.Account;
 import demo.task1.utils.JpaFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -47,6 +48,15 @@ public class GenericDaoImpl<T,K> implements GenericDao<T,K> {
 
     @Override
     public void update(T t) {
+        if (t == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
+
+        Optional<T> a = findById(getAccountId(t));
+        if (id == null) {
+            throw new IllegalArgumentException("Entity ID cannot be null for updates");
+        }
+
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
         em.merge(t);
@@ -71,5 +81,15 @@ public class GenericDaoImpl<T,K> implements GenericDao<T,K> {
         CriteriaQuery<T> all = cq.select(rootEntry);
         TypedQuery<T> allQuery = em.createQuery(all);
         return allQuery.getResultList();
+    }
+
+    private Object getAccountId(T t) {
+        try {
+            java.lang.reflect.Field idField = t.getClass().getSuperclass().getDeclaredField("id");
+            idField.setAccessible(true);
+            return idField.get(t);
+        } catch (Exception e) {
+            throw new RuntimeException("Error accessing ID field", e);
+        }
     }
 }

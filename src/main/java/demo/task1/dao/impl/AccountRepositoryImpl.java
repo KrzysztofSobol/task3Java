@@ -2,10 +2,15 @@ package demo.task1.dao.impl;
 
 import demo.task1.models.Account;
 import demo.task1.dao.AccountRepository;
+import demo.task1.utils.JpaFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class AccountRepositoryImpl extends GenericDaoImpl<Account, Long> implements AccountRepository {
@@ -15,5 +20,41 @@ public class AccountRepositoryImpl extends GenericDaoImpl<Account, Long> impleme
         Account account = new Account(name, address, balance);
         save(account);
         return account;
+    }
+
+    @Override
+    public Optional<Account> findByNameAndAddress(String name, String address) {
+        EntityManager em = getEntityManager();
+        try{
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Account> cq = cb.createQuery(Account.class);
+            Root<Account> root = cq.from(Account.class); // kinda like FROM in SQL
+
+            Predicate namePredicate = cb.equal(root.get("name"), name);
+            Predicate addressPredicate = cb.equal(root.get("address"), address);
+
+            cq.where(cb.and(namePredicate, addressPredicate));
+
+            try{
+                Account account = em.createQuery(cq)
+                        .setMaxResults(1)
+                        .getResultList()
+                        .stream()
+                        .findFirst()
+                        .orElse(null);
+
+                if (account != null) {
+                    return Optional.of(account);
+                } else {
+                    return Optional.empty();
+                }
+            } catch (NoResultException e) {
+                return Optional.empty();
+            }
+        } finally {
+            if(em != null && em.isOpen()) {
+                em.close();
+            }
+        }
     }
 }
