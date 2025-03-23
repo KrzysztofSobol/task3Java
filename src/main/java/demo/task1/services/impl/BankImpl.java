@@ -135,7 +135,7 @@ public class BankImpl implements Bank {
     }
 
     @Override
-    public void transfer(Long idSource, Long idDestination, BigDecimal amount) {
+    public void transfer(Long idSource, Long idDestination, BigDecimal amount, String title) {
         try {
             logger.fine("Making a transfer from " + idSource + " to " + idDestination);
             Optional<Account> sourceAccount = accountRepository.findById(idSource);
@@ -157,8 +157,8 @@ public class BankImpl implements Bank {
             sourceAc.setBalance(sourceAc.getBalance().subtract(amount));
             destAc.setBalance(destAc.getBalance().add(amount));
 
-            operationRepository.createTransferOperation(sourceAc, destAc, amount, OperationType.TRANSFER_OUT);
-            operationRepository.createTransferOperation(destAc, sourceAc, amount, OperationType.TRANSFER_IN);
+            operationRepository.createTransferOperation(sourceAc, destAc, amount, OperationType.TRANSFER_OUT, title);
+            operationRepository.createTransferOperation(destAc, sourceAc, amount, OperationType.TRANSFER_IN, title);
 
             accountRepository.update(sourceAc);
             accountRepository.update(destAc);

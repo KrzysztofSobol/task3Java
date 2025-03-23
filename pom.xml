@@ -200,19 +200,4 @@
         </plugins>
     </reporting>
 
-    <profiles>
-        <profile>
-            <id>test</id>
-            <properties>
-                <persistence.jdbc.url>jdbc:h2:mem:</persistence.jdbc.url>
-            </properties>
-        </profile>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <persistence.jdbc.url>jdbc:postgresql://localhost:5432/postgres</persistence.jdbc.url>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>

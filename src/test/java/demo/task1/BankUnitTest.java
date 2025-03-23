@@ -215,7 +215,7 @@ public class BankUnitTest {
         Long id2 = bank.createAccount("a","b");
 
         bank.deposit(id1, BigDecimal.ONE);
-        bank.transfer(id1, id2, BigDecimal.ONE);
+        bank.transfer(id1, id2, BigDecimal.ONE, "test");
 
         BigDecimal balance = bank.getBalance(id2);
         assertEquals(balance, BigDecimal.ONE);
@@ -225,26 +225,26 @@ public class BankUnitTest {
     void test_transfer_when_receiver_doesnt_exists() {
         Long id = bank.createAccount("x","y");
         bank.deposit(id, BigDecimal.ONE);
-        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(id, 2L, BigDecimal.ONE));
+        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(id, 2L, BigDecimal.ONE, "test"));
     }
 
     @Test
     void test_transfer_when_sender_doesnt_exists() {
         Long id = bank.createAccount("x","y");
-        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(2L, id, BigDecimal.ONE));
+        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(2L, id, BigDecimal.ONE, "test"));
     }
 
     @Test
     void test_transfer_when_receiver_is_null() {
         Long id = bank.createAccount("x","y");
         bank.deposit(id, BigDecimal.ONE);
-        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(id, null, BigDecimal.ONE));
+        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(id, null, BigDecimal.ONE, "test"));
     }
 
     @Test
     void test_transfer_when_sender_is_null() {
         Long id = bank.createAccount("x","y");
-        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(null, id, BigDecimal.ONE));
+        assertThrows(Bank.AccountIdException.class, () -> bank.transfer(null, id, BigDecimal.ONE, "test"));
     }
 
     @Test
@@ -252,7 +252,7 @@ public class BankUnitTest {
         Long id1 = bank.createAccount("x","y");
         Long id2 = bank.createAccount("a","b");
 
-        assertThrows(Bank.InsufficientFundsException.class, () -> bank.transfer(id1, id2, BigDecimal.ONE));
+        assertThrows(Bank.InsufficientFundsException.class, () -> bank.transfer(id1, id2, BigDecimal.ONE, "test"));
     }
 
     @Test
@@ -262,6 +262,6 @@ public class BankUnitTest {
 
         bank.deposit(id1, BigDecimal.ONE);
 
-        assertThrows(Bank.InsufficientFundsException.class, () -> bank.transfer(id1, id2, BigDecimal.TEN));
+        assertThrows(Bank.InsufficientFundsException.class, () -> bank.transfer(id1, id2, BigDecimal.TEN, "test"));
     }
 }

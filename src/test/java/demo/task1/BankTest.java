@@ -127,7 +127,7 @@ public class BankTest {
         when(accountRepository.findById(1L)).thenReturn(
                 Optional.of(TestDataUtil.createTestAccountA()));
 
-        bank.transfer(2L, 1L, BigDecimal.ONE);
+        bank.transfer(2L, 1L, BigDecimal.ONE, "test");
 
         verify(accountRepository).findById(2L);
         verify(accountRepository).findById(1L);

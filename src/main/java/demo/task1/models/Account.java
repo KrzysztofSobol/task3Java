@@ -39,14 +39,4 @@ public class Account extends AbstractModel{
         this.address = account.getAddress();
         this.balance = account.getBalance();
     }
-
-    public void addOperation(AccountOperation operation) {
-        operations.add(operation);
-        operation.setAccount(this);
-    }
-
-    public void removeOperation(AccountOperation operation) {
-        operations.remove(operation);
-        operation.setAccount(null);
-    }
 }

@@ -12,7 +12,7 @@ public interface AccountOperationRepository extends GenericDao<AccountOperation,
     AccountOperation createOperation(Account account, BigDecimal amount, OperationType type);
 
     AccountOperation createTransferOperation(Account sourceAccount, Account destinationAccount,
-                                             BigDecimal amount, OperationType type);
+                                             BigDecimal amount, OperationType type, String title);
 
     List<AccountOperation> findByAccount(Account account);
 }

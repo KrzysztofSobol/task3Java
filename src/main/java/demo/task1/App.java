@@ -173,9 +173,11 @@ public class App {
         System.out.println("Enter the amount to transfer: ");
         BigDecimal amount = scanner.nextBigDecimal();
         scanner.nextLine();
+        System.out.println("Enter the title of the transfer: ");
+        String title = scanner.nextLine();
 
         try {
-            bank.transfer(sourceId, destId, amount);
+            bank.transfer(sourceId, destId, amount, title);
             System.out.println("Transfer successful");
             System.out.println("Source account balance: " + bank.getBalance(sourceId));
             System.out.println("Destination account balance: " + bank.getBalance(destId));

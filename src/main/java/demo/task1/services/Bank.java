@@ -60,7 +60,7 @@ public interface Bank {
      * @throws InsufficientFundsException gdy srodki na koncie nie sa
      * wystarczajace do wykonania operacji
      */
-    void transfer(Long idSource, Long idDestination, BigDecimal amount);
+    void transfer(Long idSource, Long idDestination, BigDecimal amount, String title);
 
     class InsufficientFundsException extends RuntimeException {
     };

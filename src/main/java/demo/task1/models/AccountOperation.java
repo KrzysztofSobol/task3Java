@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ACCOUNT_OPERATIONS")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class AccountOperation extends AbstractModel {
 
     @ManyToOne
@@ -28,9 +29,4 @@ public class AccountOperation extends AbstractModel {
 
     @Enumerated(EnumType.STRING)
     private OperationType type;
-    private LocalDateTime timestamp;
-
-    @ManyToOne
-    @JoinColumn(name = "related_account_id")
-    private Account relatedAccount;
 }
